@@ -11,7 +11,57 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
+Route::get('/', array(
+	'as'=> 'home',
+	'uses'=> 'HomeController@home'
+));
+
+/*
+ * Unauthenticated group
+ */
+Route::group(array('before' => 'guest'), function() {
+	/*
+	 * CSRF protection group
+	 */
+
+	Route::group(array('before' => 'csrf'), function() {
+		/*
+		 * Create account (POST)
+		 */
+
+		Route::post('/account/create', array(
+			'as' => 'account-create-post',
+			'uses' => 'AccountController@postCreate'
+		));
+
+		/*
+		 * Sign in (POST)
+		 */
+		Route::post('/account/sign-in', array(
+			'as' => 'account-sign-in-post',
+			'uses' => 'AccountController@postSignIn'
+		));
+	});
+
+		/*
+		 * Sign in (GET)
+		 */
+	Route::get('/account/sign-in', array(
+		'as' => 'account-sign-in',
+		'uses' => 'AccountController@getSignIn'
+	));
+
+		/*
+		 * Create account (GET)
+		 */
+	Route::get('/account/create', array(
+		'as' => 'account-create',
+		'uses' => 'AccountController@getCreate'
+	));
+
+	Route::get('/account/active/{code}', array(
+		'as' => 'account-active',
+		'uses' => 'AccountController@getActive'
+	));
+
 });
